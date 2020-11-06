@@ -17,7 +17,7 @@ def parse_args():
                         help='batch_size')
     parser.add_argument('--epochs', type=int, default=500,
                         help='Number of epochs.')
-    parser.add_argument('--embed_size', type=int, default=64,
+    parser.add_argument('--embed_size', type=int, default=180,
                         help='Embedding size.')
     parser.add_argument('--lr', type=float, default=0.05,
                         help='Learning rate.')
@@ -25,7 +25,7 @@ def parse_args():
                         help='dropout keep_prob')
     parser.add_argument('--negative_weight', type=float, default=0.1,
                         help='weight of non-observed data')
-    parser.add_argument('--topK', nargs='?', type=int, default=[50,100,200],
+    parser.add_argument('--topK', nargs='?', type=int, default=[1,5,10],
                         help='topK for hr/ndcg')
 
     return parser.parse_args()
@@ -383,19 +383,19 @@ if __name__ == '__main__':
     test_set = {}
     for i in range(len(u_test)):
         if  u_test[i] in test_set:
-            test_set[u_test[i]].append(i_test[i])
+            test_set[u_test[i]-1].append(i_test[i]-1)
         else:
-            test_set[u_test[i]] = [i_test[i]]
+            test_set[u_test[i]-1] = [i_test[i]-1]
 
 
     train_set = {}
     max_item_pu = 0
     for i in range(len(u_train)):
         if u_train[i] in train_set:
-            train_set[u_train[i]].append(i_train[i])
+            train_set[u_train[i]-1].append(i_train[i]-1)
         else:
-            train_set[u_train[i]] = [i_train[i]]
-
+            train_set[u_train[i]-1] = [i_train[i]-1]
+    
     for i in train_set:
         if len(train_set[i]) > max_item_pu:
             max_item_pu = len(train_set[i])
