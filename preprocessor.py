@@ -10,17 +10,17 @@ class ml1m:
        self.batch_size = batch_size
        self.train_df = pd.read_csv('./data/ml-1m/train.csv')
        self.test_df = pd.read_csv('./data/ml-1m/test.csv')
-       self.num_users = np.max(self.train_df['userId'])
-       self.num_items = np.max(self.train_df['movieId'])
+       self.num_users = int(np.max(self.train_df['userId']))
+       self.num_items = int(np.max(self.train_df['movieId']))
        self.train_mat = self.train_df.values
        self.test_mat = self.test_df.values
-       self.train_set, self.train_R, self.train_R_U, self.train_R_I, self.item_train, self.max_item= self.get_train_set()
+       self.train_set, self.train_R, self.item_train, self.max_item= self.get_train_set()
        self.test_R = self.get_test_R()
 
 
     def get_test_R(self):
-        num_users = np.max(self.test_df['userId'])
-        num_items = np.max(self.test_df['movieId'])
+        num_users = int(np.max(self.test_df['userId']))
+        num_items = int(np.max(self.test_df['movieId']))
 
         test_R = np.zeros((num_users, num_items),dtype=np.float32)  # testing rating matrix
         for i in range(len(self.test_df)):
@@ -45,12 +45,12 @@ class ml1m:
            else:
                train_set[cur_user] = train_items
                cur_user = user_idx
-               train_items = []
+               train_items = [item_idx]
        train_set[cur_user] = train_items
-       train_R_U = train_R
-       index = np.where(train_R_U.sum(axis=1) != 0)
-       train_R_U[index] = train_R_U[index] / train_R_U.sum(axis=1, keepdims=True)[index]
-       train_R_I = train_R.T
+       #train_R_U = train_R
+       #index = np.where(train_R_U.sum(axis=1) != 0)
+       #train_R_U[index] = train_R_U[index] / train_R_U.sum(axis=1, keepdims=True)[index]
+       #train_R_I = train_R.T
        max_item  = 0
        for i in train_set:
            if len(train_set[i]) > max_item:
@@ -65,7 +65,7 @@ class ml1m:
 
        item_train = np.array(item_train)
 
-       return train_set, train_R, train_R_U, train_R_I, item_train, max_item
+       return train_set, train_R, item_train, max_item
 
 
     def sample (self):
