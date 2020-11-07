@@ -35,13 +35,13 @@ class JoVA():
         self.train_R = data.train_R
         self.train_R_U = data.train_R_U
         self.train_R_I = data.train_R_I
-        self.train_R_U_norm = tf.nn.l2_normalize(self.train_R_U, 1)
-        self.train_R_I_norm = tf.nn.l2_normalize(self.train_R_I, 1)
+        #self.train_R_U_norm = tf.nn.l2_normalize(self.train_R_U, 1)
+       # self.train_R_I_norm = tf.nn.l2_normalize(self.train_R_I, 1)
         self.test_R = data.test_R
         self.train_epoch = args.train_epoch
         self.batch_size = args.batch_size
 
-        self.train_num = self.train_R.sum()
+        #self.train_num = self.train_R.sum()
         self.num_batch = int(math.ceil(self.num_users / float(self.batch_size)))
 
         self.lr = args.lr
@@ -65,9 +65,9 @@ class JoVA():
     def user_vae(self):
         # encoder
 
-        self.W4_u = tf.get_variable('W4_u', [self.num_items, latent_dim], tf.float32, xavier_initializer())
-        self.h = tf.get_variable('h', [1, latent_dim], tf.float32, xavier_initializer())
-        u_embedding_ae = tf.matmul(self.input_R_U, self.W4_u)
+        self.W_u = tf.get_variable('W_u', [self.num_items, latent_dim], tf.float32, xavier_initializer())
+       # self.h = tf.get_variable('h', [1, latent_dim], tf.float32, xavier_initializer())
+        u_embedding_ae = tf.matmul(self.input_R_U, self.W_u)
         u_embedding = u_embedding_ae
 
         return u_embedding
@@ -75,9 +75,9 @@ class JoVA():
     def item_vae(self):
         # encoder
 
-        self.W4_i = tf.get_variable('W4_i', [self.num_items + 1, latent_dim], tf.float32, xavier_initializer())
+        self.W_i = tf.get_variable('W_i', [self.num_items + 1, latent_dim], tf.float32, xavier_initializer())
 
-        i_embedding = self.W4_i
+        i_embedding = self.W_i
 
         return i_embedding
 
@@ -92,7 +92,7 @@ class JoVA():
             tf.reduce_sum(tf.reduce_sum(tf.einsum('ab,ac->abc', self.i_embeddings, self.i_embeddings), 0)
                           * tf.reduce_sum(tf.einsum('ab,ac->abc', self.u_embeddings, self.u_embeddings), 0)
                           , 0), 0)
-        loss += tf.reduce_sum((1.0 - 0.5) * tf.square(pos_r) - 2.0 * pos_r)
+        loss += tf.reduce_sum((1.0 - 0.5) * tf.square(pos_r) - 2.0 * pos_r) + 1e-4*(tf.nn.l2_loss(self.W_u) + tf.nn.l2_loss(self.W_i))
 
         return loss
 
