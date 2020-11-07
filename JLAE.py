@@ -33,23 +33,26 @@ class JoVA():
         self.max_item = data.max_item
         self.item_train = data.item_train
         self.train_R = data.train_R
-        self.train_R_U = data.train_R_U
-        self.train_R_I = data.train_R_I
+        #self.train_R_U = data.train_R_U
+        #self.train_R_I = data.train_R_I
         #self.train_R_U_norm = tf.nn.l2_normalize(self.train_R_U, 1)
-       # self.train_R_I_norm = tf.nn.l2_normalize(self.train_R_I, 1)
+        #self.train_R_I_norm = tf.nn.l2_normalize(self.train_R_I, 1)
         self.test_R = data.test_R
         self.train_epoch = args.train_epoch
         self.batch_size = args.batch_size
 
         #self.train_num = self.train_R.sum()
-        self.num_batch = int(math.ceil(self.num_users / float(self.batch_size)))
+        self.num_batch_u = int(math.ceil(self.num_users / float(self.batch_size)))
+        self.num_batch_i = int(math.ceil(self.num_items / float(self.batch_size)))
 
         self.lr = args.lr
 
         self.users = tf.placeholder(tf.int32, shape=(None,))
         self.input_R_U = tf.placeholder(dtype=tf.float32, shape=[None, self.num_items], name="input_R_U")
+        #self.input_R_I = tf.placeholder(dtype=tf.float32, shape=[self.num_users, None], name="input_R_U")
 
         self.user_pos_item = tf.nn.embedding_lookup(self.item_train, self.users)
+   
 
         self.u_embeddings = self.user_vae()
         self.i_embeddings = self.item_vae()
@@ -67,7 +70,7 @@ class JoVA():
 
         self.W_u = tf.get_variable('W_u', [self.num_items, latent_dim], tf.float32, xavier_initializer())
        # self.h = tf.get_variable('h', [1, latent_dim], tf.float32, xavier_initializer())
-        u_embedding_ae = tf.matmul(self.input_R_U, self.W_u)
+        u_embedding_ae = tf.matmul(tf.square(tf.nn.l2_normalize(self.input_R_U, 1)), self.W_u)
         u_embedding = u_embedding_ae
 
         return u_embedding
@@ -117,8 +120,8 @@ if __name__ == '__main__':
         loss = 0.
         random_row_idx = np.random.permutation(model.num_users)
 
-        for i in range(model.num_batch):
-            if i == model.num_batch - 1:
+        for i in range(model.num_batch_u):
+            if i == model.num_batch_u - 1:
                 row_idx = random_row_idx[i * model.batch_size:]
             else:
                 row_idx = random_row_idx[(i * model.batch_size):((i + 1) * model.batch_size)]
