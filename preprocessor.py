@@ -11,7 +11,7 @@ class ml1m:
        self.train_df = pd.read_csv('./data/ml-1m/train.csv')
        self.test_df = pd.read_csv('./data/ml-1m/test.csv')
        self.num_users = int(np.max(self.train_df['userId']))
-       self.num_items = int(np.max(self.train_df['movieId']))
+       self.num_items = int(np.max(self.train_df['itemId']))
        self.train_mat = self.train_df.values
        self.test_mat = self.test_df.values
        self.train_set, self.train_R, self.item_train, self.max_item= self.get_train_set()
@@ -20,7 +20,7 @@ class ml1m:
 
     def get_test_R(self):
         num_users = int(np.max(self.test_df['userId']))
-        num_items = int(np.max(self.test_df['movieId']))
+        num_items = int(np.max(self.test_df['itemId']))
 
         test_R = np.zeros((num_users, num_items),dtype=np.float32)  # testing rating matrix
         for i in range(len(self.test_df)):
