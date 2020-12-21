@@ -8,13 +8,14 @@ import pandas as pd
 class ml1m:
     def __init__(self,  batch_size):
        self.batch_size = batch_size
-       self.train_df = pd.read_csv('./data/ml-1m/train.csv')
-       self.test_df = pd.read_csv('./data/ml-1m/test.csv')
+       self.train_df = pd.read_csv('./data/yelp/train.csv')
+       self.test_df = pd.read_csv('./data/yelp/test.csv')
        self.num_users = int(np.max(self.train_df['userId']))
        self.num_items = int(np.max(self.train_df['itemId']))
        self.train_mat = self.train_df.values
        self.test_mat = self.test_df.values
        self.train_set, self.train_R, self.item_train, self.max_item= self.get_train_set()
+       self.coffi = 0.2*(-1*self.train_R + 1) + self.train_R
        self.test_R = self.get_test_R()
 
 
