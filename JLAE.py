@@ -49,7 +49,7 @@ class JoVA():
 
         self.W_u = tf.get_variable('W_u', [self.num_items, latent_dim], tf.float32, xavier_initializer())
         self.W_i = tf.get_variable('W_i', [latent_dim, self.num_items], tf.float32, xavier_initializer())
-        u_embedding = tf.matmul(tf.nn.dropout(tf.nn.l2_normalize(self.input_R_U, 1),self.drop), self.W_u)
+        u_embedding = tf.matmul(tf.nn.dropout(tf.square(tf.nn.l2_normalize(self.input_R_U, 1)),self.drop), self.W_u)
         self.decoder = tf.matmul(u_embedding,self.W_i)
         loss = tf.reduce_sum(tf.square(self.decoder-self.input_R_U)*self.train_coffi) 
         return loss
