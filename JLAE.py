@@ -46,9 +46,10 @@ class JoVA():
 
     def foward(self):
         # encoder
-
-        self.W_u = tf.get_variable('W_u', [self.num_items, latent_dim], tf.float32, xavier_initializer())
-        self.W_i = tf.get_variable('W_i', [latent_dim, self.num_items], tf.float32, xavier_initializer())
+        #self.W_u = tf.Variable(tf.truncated_normal(shape=[self.num_items, latent_dim], mean=0.0,stddev=0.01), dtype=tf.float32, name="W_u")
+        self.W_u = tf.get_variable('W_u', [self.num_items, latent_dim], tf.float32, xavier_initializer(seed=2021))
+        self.W_i = tf.get_variable('W_i', [latent_dim, self.num_items], tf.float32, xavier_initializer(seed=2021))
+        #self.W_i = tf.Variable(tf.truncated_normal(shape=[latent_dim, self.num_items], mean=0.0,stddev=0.01), dtype=tf.float32, name="W_i")
         u_embedding = tf.matmul(tf.nn.dropout(tf.square(tf.nn.l2_normalize(self.input_R_U, 1)),self.drop), self.W_u)
         self.decoder = tf.matmul(u_embedding,self.W_i)
         loss = tf.reduce_sum(tf.square(self.decoder-self.input_R_U)*self.train_coffi) 
@@ -56,10 +57,12 @@ class JoVA():
 if __name__ == '__main__':
     os.environ["CUDA_VISIBLE_DEVICES"] = str(args.gpu_id)
     model = JoVA(args, data_generator)
+    np.random.seed(2021)
+    tf.set_random_seed(2021) 
     config = tf.ConfigProto()
     config.gpu_options.allow_growth = True
     sess = tf.Session(config=config)
-
+    
     sess.run(tf.global_variables_initializer())
 
     for epoch in range(1, args.train_epoch + 1):
