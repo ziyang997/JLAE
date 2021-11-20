@@ -20,7 +20,7 @@ args = parse_args()
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '2'
 gpus = [x.name for x in device_lib.list_local_devices() if x.device_type == 'GPU']
 cpus = [x.name for x in device_lib.list_local_devices() if x.device_type == 'CPU']
-data_generator = ml1m(args.batch_size)
+data_generator = data(args.batch_size)
 intermediate_dim = 512
 latent_dim = 160
 
