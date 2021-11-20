@@ -15,7 +15,7 @@ class data:
        self.train_mat = self.train_df.values
        self.test_mat = self.test_df.values
        self.train_set, self.train_R, self.item_train, self.max_item= self.get_train_set()
-       self.coffi = 0.2*(-1*self.train_R + 1) + self.train_R
+       self.coffi = 0.2*(-1*self.train_R + 1) + self.train_R# 0.5 for ml1m, 0.2 for yelp, 0.15 for game
        self.test_R = self.get_test_R()
 
 
@@ -81,57 +81,4 @@ class data:
                     break
         return users, pos_items, neg_items
 
-    #@staticmethod
-    def train(n):
-        train_df = pd.read_csv('./data/ml-1m/train_%d.csv' % n)
-        vali_df = pd.read_csv('./data/ml-1m/vali_%d.csv' % n)
-        num_users = np.max(train_df['userId'])
-        num_items = np.max(train_df['movieId'])
-
-        train_R = np.zeros((num_users, num_items))  # training rating matrix
-        vali_R = np.zeros((num_users, num_items))  # validation rating matrix
-
-        train_mat = train_df.values
-        for i in range(len(train_df)):
-            user_idx = int(train_mat[i, 0]) - 1
-            item_idx = int(train_mat[i, 1]) - 1
-            train_R[user_idx, item_idx] = 1
-
-        vali_mat = vali_df.values
-        for i in range(len(vali_df)):
-            user_idx = int(vali_mat[i, 0]) - 1
-            item_idx = int(vali_mat[i, 1]) - 1
-            vali_R[user_idx, item_idx] = 1
-        return train_R, vali_R
-
-    #@staticmethod
-    def test():
-        test_df = pd.read_csv('./data/ml-1m/test.csv')
-        num_users = np.max(test_df['userId'])
-        num_items = np.max(test_df['movieId'])
-
-        test_R = np.zeros((num_users, num_items))  # testing rating matrix
-
-        test_mat = test_df.values
-        for i in range(len(test_df)):
-            user_idx = int(test_mat[i, 0]) - 1
-            item_idx = int(test_mat[i, 1]) - 1
-            test_R[user_idx, item_idx] = 1
-
-        train_df = pd.read_csv('./data/ml-1m/train.csv')
-        num_users = np.max(train_df['userId'])
-        num_items = np.max(train_df['movieId'])
-
-        train_R = np.zeros((num_users, num_items))  # testing rating matrix
-
-        train_mat = train_df.values
-        for i in range(len(train_df)):
-            user_idx = int(train_mat[i, 0]) - 1
-            item_idx = int(train_mat[i, 1]) - 1
-            train_R[user_idx, item_idx] = 1
-            #train_R[user_idx, item_idx] = 1
-
-        return train_R, test_R
-
-
-   
+  
