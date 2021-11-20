@@ -5,7 +5,7 @@ zhuziwei@tamu.edu
 """
 import numpy as np
 import pandas as pd
-class ml1m:
+class data:
     def __init__(self,  batch_size):
        self.batch_size = batch_size
        self.train_df = pd.read_csv('./data/yelp/train.csv')
