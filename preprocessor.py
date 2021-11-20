@@ -8,7 +8,7 @@ import pandas as pd
 class data:
     def __init__(self,  batch_size):
        self.batch_size = batch_size
-       self.train_df = pd.read_csv('./data/yelp/train.csv')
+       self.train_df = pd.read_csv('./data/yelp/train.csv')# ml1m, yelp, game
        self.test_df = pd.read_csv('./data/yelp/test.csv')
        self.num_users = int(np.max(self.train_df['userId']))
        self.num_items = int(np.max(self.train_df['itemId']))
