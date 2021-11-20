@@ -15,7 +15,7 @@ from test import parse_args
 from preprocessor import *
 
 args = parse_args()
-data_generator = ml1m(args.batch_size)
+data_generator = data(args.batch_size)
 
 
 # calculate NDCG@k
